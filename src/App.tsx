@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useGetFruitsQuery } from './services/fruityViceApi';
 import { setGroupBy } from './features/fruits/fruitsSlice';
+import { addFruitToJar, addGroupToJar } from './features/jar/jarSlice';
 import { RootState } from './store';
 
 import { Fruit } from './types';
@@ -10,13 +11,23 @@ import { Fruit } from './types';
 const App: React.FC = () => {
   const dispatch = useDispatch();
   const { groupBy } = useSelector((state: RootState) => state.fruits);
+  const { selectedFruits } = useSelector((state: RootState) => state.jar);
 
   const { data: fruits = [], error, isLoading } = useGetFruitsQuery();
-  const groupedFruits = groupFruits(fruits, groupBy);
 
   function handleGroupByChange (event: React.ChangeEvent<HTMLSelectElement>) {
     dispatch(setGroupBy(event.target.value as 'None' | 'Family' | 'Order' | 'Genus'));
   }
+
+  function handleAddFruitToJar (fruit: Fruit) {
+    dispatch(addFruitToJar(fruit));
+  }
+
+  function handleAddGroupToJar (group: Fruit[]) {
+    dispatch(addGroupToJar(group));
+  }
+
+  const groupedFruits = groupFruits(fruits, groupBy);
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error occurred</div>;
@@ -25,6 +36,7 @@ const App: React.FC = () => {
     <div className="App">
       <h1>Fruity Vice</h1>
 
+      <h2>Fruits</h2>
       <div>
         <label htmlFor="groupBy">Group by:</label>
         <select id="groupBy" value={groupBy} onChange={handleGroupByChange}>
@@ -37,16 +49,36 @@ const App: React.FC = () => {
 
       {Object.entries(groupedFruits).map(([groupName, fruits]) => (
         <div key={groupName}>
-          {groupBy !== 'None' && <h3>{groupName}</h3>}
+          {groupBy !== 'None' && (
+            <>
+              <h3>{groupName}</h3>
+              <button onClick={() => handleAddGroupToJar(fruits)}>Add Group</button>
+          </>)}
             <ul>
               {fruits.map(fruit => (
                 <li key={fruit.name}>
                   {fruit.name} ({fruit.nutritions.calories} calories)
+                  <button onClick={() => handleAddFruitToJar(fruit)}>Add</button>
                 </li>
               ))}
             </ul>
           </div>
         ))}
+
+        {/* Jar */}
+        <div>
+          <h2>Jar</h2>
+          <p>Total Calories: {selectedFruits.reduce((total, fruit) => total + fruit.nutritions.calories, 0)}</p>
+
+          <ul>
+            {selectedFruits.map((fruit, index) => (
+              <li key={index}>
+                {fruit.name} ({fruit.nutritions.calories} calories)
+              </li>
+            ))}
+          </ul>
+
+        </div>
     </div>
   );
 };
