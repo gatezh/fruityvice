@@ -1,25 +1,24 @@
 import React from 'react';
-// import logo from './logo.svg';
-// import './App.css';
+import { useGetFruitsQuery } from './services/fruityViceApi';
 
-function App() {
+const App: React.FC = () => {
+  const { data: fruits, error, isLoading } = useGetFruitsQuery({});
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error occurred</div>;
+
   return (
     <div className="App">
-      <header className="App-header">
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Fruity Vice</h1>
+      <ul>
+        {fruits?.map((fruit: any) => (
+          <li key={fruit.name}>
+            {fruit.name} ({fruit.nutritions.calories} calories)
+          </li>
+        ))}
+      </ul>
     </div>
   );
-}
+};
 
 export default App;
