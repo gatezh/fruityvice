@@ -15,15 +15,17 @@ const App: React.FC = () => {
 
   const { data: fruits = [], error, isLoading } = useGetFruitsQuery();
 
-  function handleGroupByChange (event: React.ChangeEvent<HTMLSelectElement>) {
-    dispatch(setGroupBy(event.target.value as 'None' | 'Family' | 'Order' | 'Genus'));
+  function handleGroupByChange(event: React.ChangeEvent<HTMLSelectElement>) {
+    dispatch(
+      setGroupBy(event.target.value as 'None' | 'Family' | 'Order' | 'Genus'),
+    );
   }
 
-  function handleAddFruitToJar (fruit: Fruit) {
+  function handleAddFruitToJar(fruit: Fruit) {
     dispatch(addFruitToJar(fruit));
   }
 
-  function handleAddGroupToJar (group: Fruit[]) {
+  function handleAddGroupToJar(group: Fruit[]) {
     dispatch(addGroupToJar(group));
   }
 
@@ -52,50 +54,64 @@ const App: React.FC = () => {
           {groupBy !== 'None' && (
             <>
               <h3>{groupName}</h3>
-              <button onClick={() => handleAddGroupToJar(fruits)}>Add Group</button>
-          </>)}
-            <ul>
-              {fruits.map(fruit => (
-                <li key={fruit.name}>
-                  {fruit.name} ({fruit.nutritions.calories} calories)
-                  <button onClick={() => handleAddFruitToJar(fruit)}>Add</button>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
-
-        {/* Jar */}
-        <div>
-          <h2>Jar</h2>
-          <p>Total Calories: {selectedFruits.reduce((total, fruit) => total + fruit.nutritions.calories, 0)}</p>
-
+              <button onClick={() => handleAddGroupToJar(fruits)}>
+                Add Group
+              </button>
+            </>
+          )}
           <ul>
-            {selectedFruits.map((fruit, index) => (
-              <li key={index}>
+            {fruits.map((fruit) => (
+              <li key={fruit.name}>
                 {fruit.name} ({fruit.nutritions.calories} calories)
+                <button onClick={() => handleAddFruitToJar(fruit)}>Add</button>
               </li>
             ))}
           </ul>
-
         </div>
+      ))}
+
+      {/* Jar */}
+      <div>
+        <h2>Jar</h2>
+        <p>
+          Total Calories:{' '}
+          {selectedFruits.reduce(
+            (total, fruit) => total + fruit.nutritions.calories,
+            0,
+          )}
+        </p>
+
+        <ul>
+          {selectedFruits.map((fruit, index) => (
+            <li key={index}>
+              {fruit.name} ({fruit.nutritions.calories} calories)
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 };
 
-function groupFruits (fruits: Fruit[], groupBy: 'None' | 'Family' | 'Order' | 'Genus') {
+function groupFruits(
+  fruits: Fruit[],
+  groupBy: 'None' | 'Family' | 'Order' | 'Genus',
+) {
   if (groupBy === 'None') {
     return { None: fruits };
   }
 
-  return fruits.reduce((groups, fruit) => {
-    const key = fruit[groupBy.toLowerCase() as 'family' | 'order' | 'genus'];
-    if (!groups[key]) {
-      groups[key] = [];
-    }
-    groups[key].push(fruit);
-    return groups;
-  }, {} as { [key: string]: Fruit[] });
-};
+  return fruits.reduce(
+    (groups, fruit) => {
+      const key = fruit[groupBy.toLowerCase() as 'family' | 'order' | 'genus'];
+      if (!groups[key]) {
+        groups[key] = [];
+      }
+      groups[key].push(fruit);
+      return groups;
+    },
+    {} as { [key: string]: Fruit[] },
+  );
+}
 
 export default App;

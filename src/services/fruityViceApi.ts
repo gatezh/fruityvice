@@ -3,7 +3,9 @@ import { Fruit } from '../types';
 
 export const fruityViceApi = createApi({
   reducerPath: 'fruityViceApi',
-  baseQuery: fetchBaseQuery({ baseUrl: 'https://corsproxy.io/?https://www.fruityvice.com/api/fruit/' }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: 'https://corsproxy.io/?https://www.fruityvice.com/api/fruit/',
+  }),
   endpoints: (builder) => ({
     getFruits: builder.query<Fruit[], void>({
       query: () => 'all',

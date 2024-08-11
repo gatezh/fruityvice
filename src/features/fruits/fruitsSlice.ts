@@ -13,7 +13,10 @@ const fruitsSlice = createSlice({
   name: 'fruits',
   initialState,
   reducers: {
-    setGroupBy(state, action: PayloadAction<'None' | 'Family' | 'Order' | 'Genus'>) {
+    setGroupBy(
+      state,
+      action: PayloadAction<'None' | 'Family' | 'Order' | 'Genus'>,
+    ) {
       state.groupBy = action.payload;
     },
   },

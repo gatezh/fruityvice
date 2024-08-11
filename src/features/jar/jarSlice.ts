@@ -20,7 +20,7 @@ const jarSlice = createSlice({
       state.totalCalories += action.payload.nutritions.calories;
     },
     addGroupToJar(state, action: PayloadAction<Fruit[]>) {
-      action.payload.forEach(fruit => {
+      action.payload.forEach((fruit) => {
         state.selectedFruits.push(fruit);
         state.totalCalories += fruit.nutritions.calories;
       });
