@@ -2,7 +2,7 @@ import React from 'react';
 import { useGetFruitsQuery } from './services/fruityViceApi';
 
 const App: React.FC = () => {
-  const { data: fruits, error, isLoading } = useGetFruitsQuery({});
+  const { data: fruits, error, isLoading } = useGetFruitsQuery();
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error occurred</div>;
