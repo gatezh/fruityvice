@@ -1,46 +1,61 @@
-# Getting Started with Create React App
+# Fruityvice app
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+## 
 
-In the project directory, you can run:
+## Starting the project
 
-### `npm start`
+Install dependecies
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+```
+npm i
+```
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+Run development server
 
-### `npm test`
+```
+npm start
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-### `npm run build`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Data Fetching
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+I used [RTK Query](https://redux-toolkit.js.org/rtk-query/overview) that comes as a part of [Redux Toolkit](https://redux-toolkit.js.org) to fetch data. Using Redux Toolkit also simplified managing states of user selected fruits.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+To overcome [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) restrictions I used [CORS proxy](https://corsproxy.io).
 
-### `npm run eject`
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Layout
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+> [TailwindCSS](https://tailwindcss.com) was used to style this project. It is [**not recommended**](https://tailwindcss.com/docs/guides/create-react-app) to use it with Create React App, so for production purpose I would use other recommended approach.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+As per the assignment, the app is divided into left (fruits list), and right (the jar) sections. It is responsive and columns stack on a small screens.
 
-## Learn More
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Group By Functionality
+
+Implemented with a Redux state.
+
+
+
+## Fruit List
+
+The initial assignments requires `Each fruit entry should be displayed in the format: {fruit name} ({amount of calories})`. Initially I have implemented it that way, but I found that brakets overwhelm the UI, so I used `{fruit name} – XX cal` formal instead.
+
+To make sure the is no confusion between adding a single fruit and a group of fruits I did the following visual distinctions:
+
+- Have a dedicated name for a button that adds a whole goup **Add Group** (instead of just **Add**)
+- Assigned different colors for those buttons
+- Moved **Add Group** button from the same column as a singualr **Add** button
+
+
+
+## Jar Functionality
+
+In addition to the required functionality the jar also shows if multiple instances of fruit was added to it (like 2 apples).
+
+Furthermore, a user is able to remove a fruit from the jar by clicking **Remove** button.
