@@ -2,11 +2,11 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## 
+##
 
 ## Starting the project
 
-Install dependecies
+Install dependencies
 
 ```
 npm i
@@ -18,15 +18,11 @@ Run development server
 npm start
 ```
 
-
-
 ## Data Fetching
 
 I used [RTK Query](https://redux-toolkit.js.org/rtk-query/overview) that comes as a part of [Redux Toolkit](https://redux-toolkit.js.org) to fetch data. Using Redux Toolkit also simplified managing states of user selected fruits.
 
 To overcome [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) restrictions I used [CORS proxy](https://corsproxy.io).
-
-
 
 ## Layout
 
@@ -34,13 +30,9 @@ To overcome [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) restr
 
 As per the assignment, the app is divided into left (fruits list), and right (the jar) sections. It is responsive and columns stack on a small screens.
 
-
-
 ## Group By Functionality
 
 Implemented with a Redux state.
-
-
 
 ## Fruit List
 
@@ -51,8 +43,6 @@ To make sure the is no confusion between adding a single fruit and a group of fr
 - Have a dedicated name for a button that adds a whole goup **Add Group** (instead of just **Add**)
 - Assigned different colors for those buttons
 - Moved **Add Group** button from the same column as a singualr **Add** button
-
-
 
 ## Jar Functionality
 
