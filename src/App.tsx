@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useGetFruitsQuery } from './services/fruityViceApi';
@@ -16,6 +16,7 @@ const App: React.FC = () => {
   const dispatch = useDispatch();
   const { groupBy } = useSelector((state: RootState) => state.fruits);
   const { selectedFruits } = useSelector((state: RootState) => state.jar);
+  const [expandedGroups, setExpandedGroups] = useState<string[]>([]);
 
   const { data: fruits = [], error, isLoading } = useGetFruitsQuery();
 
@@ -35,6 +36,14 @@ const App: React.FC = () => {
 
   function handleRemoveFruitFromJar(fruit: Fruit) {
     dispatch(removeFruitFromJar(fruit));
+  }
+
+  function toggleGroup(groupName: string) {
+    setExpandedGroups((prev) =>
+      prev.includes(groupName)
+        ? prev.filter((name) => name !== groupName)
+        : [...prev, groupName],
+    );
   }
 
   const groupedFruits = groupFruits(fruits, groupBy);
@@ -71,11 +80,37 @@ const App: React.FC = () => {
             </div>
 
             <div>
-              {Object.entries(groupedFruits).map(([groupName, fruits]) => (
-                <div key={groupName}>
-                  {groupBy !== 'None' && (
+              {groupBy === 'None' ? (
+                <ul className="space-y-1">
+                  {fruits.map((fruit) => (
+                    <li
+                      key={fruit.name}
+                      className="flex justify-between items-center p-2 border-b border-gray-200"
+                    >
+                      <div>
+                        {fruit.name} –{' '}
+                        <span className="font-semibold text-gray-500">
+                          {fruit.nutritions.calories} cal
+                        </span>
+                      </div>
+                      <button
+                        onClick={() => handleAddFruitToJar(fruit)}
+                        className="bg-green-400 text-white px-2 py-1 rounded-md"
+                      >
+                        Add
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                Object.entries(groupedFruits).map(([groupName, fruits]) => (
+                  <div key={groupName} className="mb-4">
                     <div className="flex items-baseline mb-2">
-                      <h3 className="text-lg font-semibold mb-2 mr-2 mt-4">
+                      <h3
+                        className="text-lg font-semibold mb-2 mr-2 mt-4 cursor-pointer"
+                        onClick={() => toggleGroup(groupName)}
+                      >
+                        {expandedGroups.includes(groupName) ? '▼' : '▶️'}{' '}
                         {groupName}
                       </h3>
                       <button
@@ -84,31 +119,34 @@ const App: React.FC = () => {
                       >
                         Add Group
                       </button>
+                      0
                     </div>
-                  )}
-                  <ul className="space-y-1">
-                    {fruits.map((fruit) => (
-                      <li
-                        key={fruit.name}
-                        className="flex justify-between items-center p-2 border-b border-gray-200"
-                      >
-                        <div>
-                          {fruit.name} –{' '}
-                          <span className="font-semibold text-gray-500">
-                            {fruit.nutritions.calories} cal
-                          </span>
-                        </div>
-                        <button
-                          onClick={() => handleAddFruitToJar(fruit)}
-                          className="bg-green-400 text-white px-2 py-1 rounded-md"
-                        >
-                          Add
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
+                    {expandedGroups.includes(groupName) && (
+                      <ul className="space-y-1 ml-4">
+                        {fruits.map((fruit) => (
+                          <li
+                            key={fruit.name}
+                            className="flex justify-between items-center p-2 border-b border-gray-200"
+                          >
+                            <div>
+                              {fruit.name} –{' '}
+                              <span className="font-semibold text-gray-500">
+                                {fruit.nutritions.calories} cal
+                              </span>
+                            </div>
+                            <button
+                              onClick={() => handleAddFruitToJar(fruit)}
+                              className="bg-green-400 text-white px-2 py-1 rounded-md"
+                            >
+                              Add
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                ))
+              )}
             </div>
           </div>
         </div>
