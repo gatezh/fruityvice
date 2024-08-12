@@ -5,8 +5,8 @@ import { useGetFruitsQuery } from './services/fruityViceApi';
 import { setGroupBy } from './features/fruits/fruitsSlice';
 import { addFruitToJar, addGroupToJar } from './features/jar/jarSlice';
 import { RootState } from './store';
-
 import { Fruit } from './types';
+import './index.css';
 
 const App: React.FC = () => {
   const dispatch = useDispatch();
@@ -35,59 +35,100 @@ const App: React.FC = () => {
   if (error) return <div>Error occurred</div>;
 
   return (
-    <div className="App">
-      <h1>Fruity Vice</h1>
+    <div className="container mx-auto p-4">
+      <h1 className="text-3xl font-bold mb-4 text-center">Fruityvice</h1>
 
-      <h2>Fruits</h2>
-      <div>
-        <label htmlFor="groupBy">Group by:</label>
-        <select id="groupBy" value={groupBy} onChange={handleGroupByChange}>
-          <option value="None">None</option>
-          <option value="Family">Family</option>
-          <option value="Order">Order</option>
-          <option value="Genus">Genus</option>
-        </select>
-      </div>
+      <div className="flex flex-col md:flex-row gap-4">
+        <div className="w-full md:w-1/2 bg-white p-4 rounded-lg shadow-md">
+          <h2 className="text-2xl font-bold mb-4">🍎 Fruits</h2>
+          <div>
+            <div className="flex items-center mb-4">
+              <label
+                htmlFor="groupBy"
+                className="text-gray-700 text-md font-bold mb-2 mr-2"
+              >
+                Group by:
+              </label>
+              <select
+                id="groupBy"
+                value={groupBy}
+                onChange={handleGroupByChange}
+                className="p-1 border border-gray-300 rounded-md mb-4"
+              >
+                <option value="None">None</option>
+                <option value="Family">Family</option>
+                <option value="Order">Order</option>
+                <option value="Genus">Genus</option>
+              </select>
+            </div>
 
-      {Object.entries(groupedFruits).map(([groupName, fruits]) => (
-        <div key={groupName}>
-          {groupBy !== 'None' && (
-            <>
-              <h3>{groupName}</h3>
-              <button onClick={() => handleAddGroupToJar(fruits)}>
-                Add Group
-              </button>
-            </>
-          )}
-          <ul>
-            {fruits.map((fruit) => (
-              <li key={fruit.name}>
-                {fruit.name} ({fruit.nutritions.calories} calories)
-                <button onClick={() => handleAddFruitToJar(fruit)}>Add</button>
-              </li>
-            ))}
-          </ul>
+            <div>
+              {Object.entries(groupedFruits).map(([groupName, fruits]) => (
+                <div key={groupName}>
+                  {groupBy !== 'None' && (
+                    <div className="flex items-baseline mb-2">
+                      <h3 className="text-lg font-semibold mb-2 mr-2 mt-4">
+                        {groupName}
+                      </h3>
+                      <button
+                        onClick={() => handleAddGroupToJar(fruits)}
+                        className="bg-blue-400 text-white px-2 py-1 rounded-md mb-2"
+                      >
+                        Add Group
+                      </button>
+                    </div>
+                  )}
+                  <ul className="space-y-1">
+                    {fruits.map((fruit) => (
+                      <li
+                        key={fruit.name}
+                        className="flex justify-between items-center p-2 border-b border-gray-200"
+                      >
+                        <div>
+                          {fruit.name} –{' '}
+                          <span className="font-semibold text-gray-500">
+                            {fruit.nutritions.calories} cal
+                          </span>
+                        </div>
+                        <button
+                          onClick={() => handleAddFruitToJar(fruit)}
+                          className="bg-green-400 text-white px-2 py-1 rounded-md"
+                        >
+                          Add
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
-      ))}
 
-      {/* Jar */}
-      <div>
-        <h2>Jar</h2>
-        <p>
-          Total Calories:{' '}
-          {selectedFruits.reduce(
-            (total, fruit) => total + fruit.nutritions.calories,
-            0,
-          )}
-        </p>
+        <div className="w-full md:w-1/2 bg-white p-4 rounded-lg shadow-md">
+          {/* Jar */}
+          <div>
+            <h2 className="text-2xl font-bold mb-4">🫙 Jar</h2>
+            <p className="text-gray-700 text-md font-bold mb-2 mr-2">
+              Total Calories:{' '}
+              {selectedFruits.reduce(
+                (total, fruit) => total + fruit.nutritions.calories,
+                0,
+              )}
+            </p>
 
-        <ul>
-          {selectedFruits.map((fruit, index) => (
-            <li key={index}>
-              {fruit.name} ({fruit.nutritions.calories} calories)
-            </li>
-          ))}
-        </ul>
+            <ul className="space-y-1">
+              {selectedFruits.map((fruit, index) => (
+                <li key={index}>
+                  {fruit.name} –{' '}
+                  <span className="font-semibold text-gray-500">
+                    {fruit.nutritions.calories} cal
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
   );
