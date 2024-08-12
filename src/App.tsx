@@ -119,7 +119,6 @@ const App: React.FC = () => {
                       >
                         Add Group
                       </button>
-                      0
                     </div>
                     {expandedGroups.includes(groupName) && (
                       <ul className="space-y-1 ml-4">
