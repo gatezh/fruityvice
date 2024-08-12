@@ -3,7 +3,11 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useGetFruitsQuery } from './services/fruityViceApi';
 import { setGroupBy } from './features/fruits/fruitsSlice';
-import { addFruitToJar, addGroupToJar } from './features/jar/jarSlice';
+import {
+  addFruitToJar,
+  addGroupToJar,
+  removeFruitFromJar,
+} from './features/jar/jarSlice';
 import { RootState } from './store';
 import { Fruit } from './types';
 import './index.css';
@@ -27,6 +31,10 @@ const App: React.FC = () => {
 
   function handleAddGroupToJar(group: Fruit[]) {
     dispatch(addGroupToJar(group));
+  }
+
+  function handleRemoveFruitFromJar(fruit: Fruit) {
+    dispatch(removeFruitFromJar(fruit));
   }
 
   const groupedFruits = groupFruits(fruits, groupBy);
@@ -124,11 +132,23 @@ const App: React.FC = () => {
 
                 <ul className="space-y-1">
                   {selectedFruits.map(({ fruit, quantity }, index) => (
-                    <li key={index}>
-                      {fruit.name} –{' '}
-                      <span className="font-semibold text-gray-500">
-                        {fruit.nutritions.calories} cal (x{quantity})
-                      </span>
+                    <li
+                      key={index}
+                      className="flex justify-between items-center p-2 border-b border-gray-200"
+                    >
+                      <div>
+                        {fruit.name} –{' '}
+                        <span className="font-semibold text-gray-500">
+                          {fruit.nutritions.calories} cal{' '}
+                          {quantity > 1 && `(x${quantity})`}
+                        </span>
+                      </div>
+                      <button
+                        onClick={() => handleRemoveFruitFromJar(fruit)}
+                        className="bg-red-500 text-white ml-3 px-2 py-2 rounded-md"
+                      >
+                        Remove
+                      </button>
                     </li>
                   ))}
                 </ul>

@@ -44,8 +44,24 @@ const jarSlice = createSlice({
         state.totalCalories += fruit.nutritions.calories;
       });
     },
+
+    removeFruitFromJar: (state, action: PayloadAction<Fruit>) => {
+      const index = state.selectedFruits.findIndex(
+        (item) => item.fruit.name === action.payload.name,
+      );
+
+      if (index !== -1) {
+        if (state.selectedFruits[index].quantity > 1) {
+          state.selectedFruits[index].quantity -= 1;
+        } else {
+          state.selectedFruits.splice(index, 1);
+        }
+        state.totalCalories -= action.payload.nutritions.calories;
+      }
+    },
   },
 });
 
-export const { addFruitToJar, addGroupToJar } = jarSlice.actions;
+export const { addFruitToJar, addGroupToJar, removeFruitFromJar } =
+  jarSlice.actions;
 export default jarSlice.reducer;
