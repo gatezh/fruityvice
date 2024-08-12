@@ -38,13 +38,13 @@ Implemented with a Redux state.
 
 ## Fruit List
 
-The initial assignments requires `Each fruit entry should be displayed in the format: {fruit name} ({amount of calories})`. Initially I have implemented it that way, but I found that brakets overwhelm the UI, so I used `{fruit name} – XX cal` formal instead.
+The initial assignments requires `Each fruit entry should be displayed in the format: {fruit name} ({amount of calories})`. Initially I have implemented it that way, but I found that brackets overwhelm the UI, so I used `{fruit name} – XX cal` formal instead.
 
 To make sure the is no confusion between adding a single fruit and a group of fruits I did the following visual distinctions:
 
-- Have a dedicated name for a button that adds a whole goup **Add Group** (instead of just **Add**)
+- Have a dedicated name for a button that adds a whole group **Add Group** (instead of just **Add**)
 - Assigned different colors for those buttons
-- Moved **Add Group** button from the same column as a singualr **Add** button
+- Moved **Add Group** button from the same column as a singular **Add** button
 
 ## Jar Functionality
 
