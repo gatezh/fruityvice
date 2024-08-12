@@ -18,6 +18,8 @@ Run development server
 npm start
 ```
 
+Open `http://localhost:3000` in your browser.
+
 ## Data Fetching
 
 I used [RTK Query](https://redux-toolkit.js.org/rtk-query/overview) that comes as a part of [Redux Toolkit](https://redux-toolkit.js.org) to fetch data. Using Redux Toolkit also simplified managing states of user selected fruits.
