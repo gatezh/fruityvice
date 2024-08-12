@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Fruit } from '../../types';
 
 interface JarState {
-  selectedFruits: Fruit[];
+  selectedFruits: { fruit: Fruit; quantity: number }[];
   totalCalories: number;
 }
 
@@ -16,12 +16,31 @@ const jarSlice = createSlice({
   initialState,
   reducers: {
     addFruitToJar(state, action: PayloadAction<Fruit>) {
-      state.selectedFruits.push(action.payload);
+      const alreadyAddedFruit = state.selectedFruits.find(
+        (item) => item.fruit.name === action.payload.name,
+      );
+
+      if (alreadyAddedFruit) {
+        alreadyAddedFruit.quantity += 1;
+      } else {
+        state.selectedFruits.push({ fruit: action.payload, quantity: 1 });
+      }
+
       state.totalCalories += action.payload.nutritions.calories;
     },
+
     addGroupToJar(state, action: PayloadAction<Fruit[]>) {
       action.payload.forEach((fruit) => {
-        state.selectedFruits.push(fruit);
+        const alreadyAddedFruit = state.selectedFruits.find(
+          (item) => item.fruit.name === fruit.name,
+        );
+
+        if (alreadyAddedFruit) {
+          alreadyAddedFruit.quantity += 1;
+        } else {
+          state.selectedFruits.push({ fruit, quantity: 1 });
+        }
+
         state.totalCalories += fruit.nutritions.calories;
       });
     },

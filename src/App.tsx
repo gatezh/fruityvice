@@ -109,24 +109,31 @@ const App: React.FC = () => {
           {/* Jar */}
           <div>
             <h2 className="text-2xl font-bold mb-4">🫙 Jar</h2>
-            <p className="text-gray-700 text-md font-bold mb-2 mr-2">
-              Total Calories:{' '}
-              {selectedFruits.reduce(
-                (total, fruit) => total + fruit.nutritions.calories,
-                0,
-              )}
-            </p>
+            {selectedFruits.length === 0 ? (
+              <div>Your jar is empty.</div>
+            ) : (
+              <div>
+                <p className="text-gray-700 text-md font-bold mb-2 mr-2">
+                  Total Calories:{' '}
+                  {selectedFruits.reduce(
+                    (total, { fruit, quantity }) =>
+                      total + fruit.nutritions.calories * quantity,
+                    0,
+                  )}
+                </p>
 
-            <ul className="space-y-1">
-              {selectedFruits.map((fruit, index) => (
-                <li key={index}>
-                  {fruit.name} –{' '}
-                  <span className="font-semibold text-gray-500">
-                    {fruit.nutritions.calories} cal
-                  </span>
-                </li>
-              ))}
-            </ul>
+                <ul className="space-y-1">
+                  {selectedFruits.map(({ fruit, quantity }, index) => (
+                    <li key={index}>
+                      {fruit.name} –{' '}
+                      <span className="font-semibold text-gray-500">
+                        {fruit.nutritions.calories} cal (x{quantity})
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
         </div>
       </div>
