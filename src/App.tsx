@@ -17,6 +17,7 @@ const App: React.FC = () => {
   const { groupBy } = useSelector((state: RootState) => state.fruits);
   const { selectedFruits } = useSelector((state: RootState) => state.jar);
   const [expandedGroups, setExpandedGroups] = useState<string[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const { data: fruits = [], error, isLoading } = useGetFruitsQuery();
 
@@ -48,6 +49,27 @@ const App: React.FC = () => {
 
   const groupedFruits = groupFruits(fruits, groupBy);
 
+  function filterFruits(groupedFruits: { [key: string]: Fruit[] }) {
+    if (searchQuery.trim() === '') return groupedFruits;
+
+    const query = searchQuery.toLowerCase();
+
+    return Object.keys(groupedFruits).reduce(
+      (acc, groupName) => {
+        const filteredGroup = groupedFruits[groupName].filter((fruit) =>
+          fruit.name.toLowerCase().includes(query),
+        );
+        if (filteredGroup.length > 0) {
+          acc[groupName] = filteredGroup;
+        }
+        return acc;
+      },
+      {} as { [key: string]: Fruit[] },
+    );
+  }
+
+  const visibleFruits = filterFruits(groupedFruits);
+
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error occurred</div>;
 
@@ -59,6 +81,14 @@ const App: React.FC = () => {
         <div className="w-full md:w-1/2 bg-white p-4 rounded-lg shadow-md">
           <h2 className="text-2xl font-bold mb-4">🍎 Fruits</h2>
           <div>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search for a fruit..."
+              className="p-2 border border-gray-300 rounded-md w-full mb-4"
+            />
+
             <div className="flex items-center mb-4">
               <label
                 htmlFor="groupBy"
@@ -80,38 +110,16 @@ const App: React.FC = () => {
             </div>
 
             <div>
-              {groupBy === 'None' ? (
-                <ul className="space-y-1">
-                  {fruits.map((fruit) => (
-                    <li
-                      key={fruit.name}
-                      className="flex justify-between items-center p-2 border-b border-gray-200"
-                    >
-                      <div>
-                        {fruit.name} –{' '}
-                        <span className="font-semibold text-gray-500">
-                          {fruit.nutritions.calories} cal
-                        </span>
-                      </div>
-                      <button
-                        onClick={() => handleAddFruitToJar(fruit)}
-                        className="bg-green-400 text-white px-2 py-1 rounded-md"
-                      >
-                        Add
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                Object.entries(groupedFruits).map(([groupName, fruits]) => (
-                  <div key={groupName} className="mb-4">
+              {Object.entries(visibleFruits).map(([groupName, fruits]) => (
+                <div key={groupName}>
+                  {groupBy !== 'None' && (
                     <div className="flex items-baseline mb-2">
                       <h3
                         className="text-lg font-semibold mb-2 mr-2 mt-4 cursor-pointer"
-                        onClick={() => toggleGroup(groupName)}
+                        onClick={() => toggleGroup(groupName)} // Toggle group
                       >
-                        {expandedGroups.includes(groupName) ? '▼' : '▶️'}{' '}
-                        {groupName}
+                        {groupName}{' '}
+                        {expandedGroups.includes(groupName) ? '▲' : '▼'}
                       </h3>
                       <button
                         onClick={() => handleAddGroupToJar(fruits)}
@@ -120,32 +128,33 @@ const App: React.FC = () => {
                         Add Group
                       </button>
                     </div>
-                    {expandedGroups.includes(groupName) && (
-                      <ul className="space-y-1 ml-4">
-                        {fruits.map((fruit) => (
-                          <li
-                            key={fruit.name}
-                            className="flex justify-between items-center p-2 border-b border-gray-200"
+                  )}
+                  {(groupBy === 'None' ||
+                    expandedGroups.includes(groupName)) && (
+                    <ul className="space-y-1">
+                      {fruits.map((fruit) => (
+                        <li
+                          key={fruit.name}
+                          className="flex justify-between items-center p-2 border-b border-gray-200"
+                        >
+                          <div>
+                            {fruit.name} –{' '}
+                            <span className="font-semibold text-gray-500">
+                              {fruit.nutritions.calories} cal
+                            </span>
+                          </div>
+                          <button
+                            onClick={() => handleAddFruitToJar(fruit)}
+                            className="bg-green-400 text-white px-2 py-1 rounded-md"
                           >
-                            <div>
-                              {fruit.name} –{' '}
-                              <span className="font-semibold text-gray-500">
-                                {fruit.nutritions.calories} cal
-                              </span>
-                            </div>
-                            <button
-                              onClick={() => handleAddFruitToJar(fruit)}
-                              className="bg-green-400 text-white px-2 py-1 rounded-md"
-                            >
-                              Add
-                            </button>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </div>
-                ))
-              )}
+                            Add
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -203,7 +212,8 @@ function groupFruits(
   groupBy: 'None' | 'Family' | 'Order' | 'Genus',
 ) {
   if (groupBy === 'None') {
-    return { None: fruits };
+    // Return a flattened array as an ungrouped list
+    return { All: fruits };
   }
 
   return fruits.reduce(
