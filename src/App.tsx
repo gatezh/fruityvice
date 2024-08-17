@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useDeferredValue } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useGetFruitsQuery } from './services/fruityViceApi';
@@ -18,6 +18,7 @@ const App: React.FC = () => {
   const { selectedFruits } = useSelector((state: RootState) => state.jar);
   const [expandedGroups, setExpandedGroups] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const deferredSearchQuery = useDeferredValue(searchQuery); // Defer the search query to avoid blocking UI
 
   const { data: fruits = [], error, isLoading } = useGetFruitsQuery();
 
@@ -50,9 +51,9 @@ const App: React.FC = () => {
   const groupedFruits = groupFruits(fruits, groupBy);
 
   function filterFruits(groupedFruits: { [key: string]: Fruit[] }) {
-    if (searchQuery.trim() === '') return groupedFruits;
+    if (deferredSearchQuery.trim() === '') return groupedFruits;
 
-    const query = searchQuery.toLowerCase();
+    const query = deferredSearchQuery.toLowerCase();
 
     return Object.keys(groupedFruits).reduce(
       (acc, groupName) => {
